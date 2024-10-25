@@ -1,15 +1,6 @@
-## Day2 Tasks
+# Scala Sandox - Consolidated Assigments
 
-Create a notebook for each of the topics
+This branch contains assignments completed during my journey with Scala, organized day by day. You’ll find assignment files in folders named `day2`, `day3`, and so on.
 
-- [Formatted output](./day2/FormattedOutput.ipynb)
-- [Variables and literals](./day2/VariablesAndLiterals.ipynb)
-- [Datatypes](./day2/Datatypes.ipynb)
-- [Conditional and Jump statements](./day2/ConditionalAndJumpStatements.ipynb)
-- [Iterative statements](./day2/IterativeStatements.ipynb)
-- [Selection statements](./day2/SelectionStatements.ipynb)
-- [Single dimensional arrays](./day2/SingleDimensionalArrays.ipynb)
-- [Multi dimensional arrays](./day2/MultiDimensionalArrays.ipynb)
-- [Basic collections](./day2/BasicCollections.ipynb)
-
-For a full list of assignments, check the [main branch](https://github.com/sakethmuthoju2k/scala-sandbox/tree/main)
+- For individual day-specific branches, see the branches named `f-dayX-task` (e.g., `f-day2-task`).
+- [Link to the base branch](https://github.com/sakethmuthoju2k/scala-sandbox/tree/base-branch) for overall guidelines.
