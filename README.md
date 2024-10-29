@@ -11,5 +11,6 @@ Create a notebook for each of the topics
 - [Single dimensional arrays](./day2/SingleDimensionalArrays.ipynb)
 - [Multi dimensional arrays](./day2/MultiDimensionalArrays.ipynb)
 - [Basic collections](./day2/BasicCollections.ipynb)
+- [Operators](./day2/Operators.ipynb)
 
 For a full list of assignments, check the [main branch](https://github.com/sakethmuthoju2k/scala-sandbox/tree/main)
