@@ -1,0 +1,14 @@
+The general deductions are:
+- In Scala, classes can have parameters. `Primary constructor` is defined directly in the class definition.
+- Parameters inside the primnary constructor are just class parameters by default and are not directly accessible as fields.
+- They are only available during construction and can be used within the class but are not fields.
+- The only way we can convert a class parameter to a class field is by adding the val / var before the parameter. Now they can be accessible via the class instance [by default, they are public].
+- On the final note, parameters without val or var are not treated as val or var fields—they are just constructor parameters. Adding val makes them immutable fields, while adding var makes them mutable fields.
+- Scala will generate default getters for val fields and both getters and setters for var fields, though custom getter and setter methods are preferred when you need additional control over data.
+- When a subclass is instantiated, the superclass’s constructor is called first, ensuring that all necessary superclass initializations are completed before the subclass’s own constructor logic runs.
+- An abstract class cannot be instantiated directly, and it can contain both fully defined members and abstract members (i.e., members without implementations)
+- Abstract classes provide a way to define a base class with some default behavior, but leave some details to be specified by subclasses.
+- Abstract classes can have abstract methods and fields that have no implementation. Subclasses must override these members.
+- Unlike interfaces (traits without implementations), abstract classes can also contain fully implemented methods, fields, and constructors.
+- Abstract classes can extend other classes, which allows them to inherit behaviors.
+- Abstract classes can have constructors just like any other class. When a subclass extends an abstract class, it must call the superclass constructor if it has parameters.
