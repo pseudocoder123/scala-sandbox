@@ -1,10 +1,11 @@
-# Scala Sandbox - Base Branch
+Given data in [data.csv](./day5/data.csv) file,
 
-Welcome! This branch serves as a base reference and doesn’t contain assignment files.
 
-- For consolidated assignments covering all days, please navigate to the [`main` branch](https://github.com/sakethmuthoju2k/scala-sandbox/tree/main).
-- To review assignments for a specific day, navigate to the corresponding branch, such as `f-day2-task` for Day 2’s tasks.
+Store the above data in a csv
 
-**Branch Structure:**
-- `main`: Consolidated assignments from all days.
-- `f-dayX-task`: Contains only the assignments from Day X.
+1. Read the text file (csv) 
+2. create the case Class to Represent the entity
+3. add all the records in to List
+4. Perform filter operations based on salary and departments
+5. perform map operations to produce formatted report
+6. perform reduce operation to find total Salary, average Salary, number of employees department wise
