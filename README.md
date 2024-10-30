@@ -12,7 +12,9 @@ Object Oriented Programming - Scala
 * Polymorphism
     - Method Overloading
     - Method Overriding
+    - Operator Overloading
 * Inheritance
     - Super Subclasses
     - Abstract
 * Companion Classes and Objects
+* Case class
