@@ -1,10 +1,29 @@
-# Scala Sandbox - Base Branch
+# Day7 Tasks
 
-Welcome! This branch serves as a base reference and doesn’t contain assignment files.
+Question 1:
 
-- For consolidated assignments covering all days, please navigate to the [`main` branch](https://github.com/sakethmuthoju2k/scala-sandbox/tree/main).
-- To review assignments for a specific day, navigate to the corresponding branch, such as `f-day2-task` for Day 2’s tasks.
+Question 2:
+Create A function that returns a Future[String]
 
-**Branch Structure:**
-- `main`: Consolidated assignments from all days.
-- `f-dayX-task`: Contains only the assignments from Day X.
+The function name is RandomNumberThreadExecutor
+
+the function should have a promise created and return associated future
+
+in the function  create three  threads where 
+each thread has a logic to generate a random number 
+
+first thread name is firstThread
+second thread name is secondThread
+third thread name is thirdThread
+
+all three threads runs infinetly
+
+whenever any of the thread gets 1567 as the random number 
+it should resolve the promise by using success with
+the message threadname+ " has generated " + 1567
+
+it should stop and it should also notify (find a mechanism)
+other threads to stop
+
+the main thread should wait for the future to be
+complete and print the message
