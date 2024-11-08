@@ -1,10 +1,20 @@
-# Scala Sandbox - Base Branch
+# Day9 Task - Kafka Consumer
 
-Welcome! This branch serves as a base reference and doesn’t contain assignment files.
+create another microservice
+that creates three actors
 
-- For consolidated assignments covering all days, please navigate to the [`main` branch](https://github.com/sakethmuthoju2k/scala-sandbox/tree/main).
-- To review assignments for a specific day, navigate to the corresponding branch, such as `f-day2-task` for Day 2’s tasks.
+CloudListener<br/>
+NetworkListener<br/>
+AppListener<br/>
 
-**Branch Structure:**
-- `main`: Consolidated assignments from all days.
-- `f-dayX-task`: Contains only the assignments from Day X.
+Each of them should have an associated consumer correspong to the
+topic that stores the message
+
+no sooner any of these actor gets a message
+
+they need to pass the message to the
+
+MessageGatherer Actor
+
+This actor has a kakfa producer that stores the received
+message to a topic name consilated-messages
