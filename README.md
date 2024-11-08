@@ -1,25 +1,48 @@
-# Day9 Task - Kafka Producer
+# Day9 Tasks
+
+Part1
 
 Create a Microservice
 that has end point
 process-Message
 
 create a case Class Message<br/>
-(messageType: string
-message: string
+(messageType: string,
+message: string,
 messageKey: string (not be confused with partition key))
 
 process-Message should receive Message
 
 There must be Three actors
 
-NetworkMessageProcessor that process the message of type NetworkMessage<br/>
-CloudMessageProcessor that process the message of type CloudMessage<br/>
-AppMessageProcessor that process the message of type AppMessageProcessor
+        NetworkMessageProcessor that process the message of type NetworkMessage
+        CloudMessageProcessor that process the message of type CloudMessage
+        AppMessageProcessor that process the message of type AppMessageProcessor
 
-NetworkMessages are written to topic network-message<br/>
-CloudMessages are written to topic cloud-message<br/>
-AppMessages are written to topi app-message
+    NetworkMessages are written to topic network-message
+    CloudMessages are written to topic cloud-message
+    AppMessages are written to topi app-message
 
 May be You think about creating an Actor Named MessageHandler
 to pass the message to the right actor
+
+Part2:
+
+create another microservice
+that creates three actors -
+
+CloudListener,
+NetworkListener,
+AppListener
+
+Each of them should have an associated consumer correspong to the
+topic that stores the message
+
+no sooner any of these actor gets a message
+
+they need to pass the message to the
+
+MessageGatherer Actor
+
+This actor has a kakfa producer that stores the received
+message to a topic name consilated-messages

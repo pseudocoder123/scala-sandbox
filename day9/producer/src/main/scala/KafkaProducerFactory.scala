@@ -1,4 +1,3 @@
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, ProducerConfig}
 import java.util.Properties
 
 object KafkaProducerFactory {
