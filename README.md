@@ -1,10 +1,25 @@
-# Scala Sandbox - Base Branch
+# Day9 Task - Kafka Producer
 
-Welcome! This branch serves as a base reference and doesn’t contain assignment files.
+Create a Microservice
+that has end point
+process-Message
 
-- For consolidated assignments covering all days, please navigate to the [`main` branch](https://github.com/sakethmuthoju2k/scala-sandbox/tree/main).
-- To review assignments for a specific day, navigate to the corresponding branch, such as `f-day2-task` for Day 2’s tasks.
+create a case Class Message<br/>
+(messageType: string
+message: string
+messageKey: string (not be confused with partition key))
 
-**Branch Structure:**
-- `main`: Consolidated assignments from all days.
-- `f-dayX-task`: Contains only the assignments from Day X.
+process-Message should receive Message
+
+There must be Three actors
+
+NetworkMessageProcessor that process the message of type NetworkMessage<br/>
+CloudMessageProcessor that process the message of type CloudMessage<br/>
+AppMessageProcessor that process the message of type AppMessageProcessor
+
+NetworkMessages are written to topic network-message<br/>
+CloudMessages are written to topic cloud-message<br/>
+AppMessages are written to topi app-message
+
+May be You think about creating an Actor Named MessageHandler
+to pass the message to the right actor

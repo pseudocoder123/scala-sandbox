@@ -7,6 +7,7 @@ import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import org.apache.kafka.clients.producer.ProducerRecord
 import spray.json._
 import org.apache.kafka.clients.producer.KafkaProducer
+import spray.json.DefaultJsonProtocol._
 
 // Message Types
 object MessageTypes {
@@ -99,8 +100,14 @@ object WebServer {
     messageHandler ! message
   }
 
+  def sendMultipleMessages(messages: List[Message]) = {
+    messages.foreach(msg =>
+      messageHandler ! msg
+    )
+  }
+
   def main(args: Array[String]): Unit = {
-    val route =
+    val route = concat(
       post {
         path("process-message") {
           entity(as[Message]) { message =>
@@ -108,7 +115,16 @@ object WebServer {
             complete(StatusCodes.OK, s"Message sent to Kafka: $message")
           }
         }
+      },
+      post {
+        path("process-multiple-messages") {
+          entity(as[List[Message]]) { messages =>
+            sendMultipleMessages(messages)
+            complete(StatusCodes.OK, s"Message sent to Kafka: $messages")
+          }
+        }
       }
+    )
 
     Http().newServerAt("0.0.0.0", 8080).bind(route)
     println("Server online at http://0.0.0.0:8080/")
