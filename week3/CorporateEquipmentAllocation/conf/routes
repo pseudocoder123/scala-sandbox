@@ -1,0 +1,50 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# https://www.playframework.com/documentation/latest/ScalaRouting
+# ~~~~
+
+# An example controller showing a sample home page
+GET     /                           controllers.HomeController.index()
+
+# Create an employee
+POST    /employee                   controllers.EmployeeController.createEmployee()
+
+# Get all allocation requests of Employee
+GET    /employee/allocations/:employeeId       controllers.EmployeeController.getAllocationRequests(employeeId: Long)
+
+# Retrieves all equipment approval requests raised by employees under a specific manager
+GET     /employee/approvals/:empId         controllers.EmployeeController.getApprovalRequests(empId: Long)
+
+# Take an action (approve/reject) the approval request
+POST    /employee/approval                controllers.EmployeeController.allocationRequestApproval()
+
+
+# Create an equipment
+POST    /equipment                  controllers.EquipmentController.createEquipment()
+
+# Update the equipment details by equipmentId
+PUT    /equipment/:id                   controllers.EquipmentController.updateEquipment(id: Long)
+
+# Get the details of equipment by equipmentId
+GET    /equipment/:id               controllers.EquipmentController.getEquipmentDetailsById(id: Long)
+
+
+# Create an equipment allocation request
+POST    /allocation                 controllers.AllocationController.requestAllocation()
+
+# Get the equipment allocation request details by allocationId
+GET    /allocation/:allocationId    controllers.AllocationController.getAllocationDetails(allocationId: Long)
+
+# Process the equipment allocation request
+POST    /allocation/process/:allocationId    controllers.AllocationController.processAllocation(allocationId: Long)
+
+# Process the allocated equipment return request
+POST    /allocation/return          controllers.AllocationController.processReturnEquipment()
+
+# Update the status of equipment after maintenance
+PUT    /maintenance    controllers.MaintenanceController.updateMaintenanceStatusAction()
+
+
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

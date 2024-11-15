@@ -1,0 +1,49 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# https://www.playframework.com/documentation/latest/ScalaRouting
+# ~~~~
+
+# An example controller showing a sample home page
+GET     /                           controllers.HomeController.index()
+
+# Create an event
+POST    /event                      controllers.EventController.createEvent()
+
+# Get event details by eventId
+GET     /event/:eventId             controllers.EventController.getEventById(eventId: Long)
+
+# Update an event by eventId
+PUT     /event/:eventId             controllers.EventController.updateEvent(eventId: Long)
+
+# Get the list of events with filters
+GET     /events                     controllers.EventController.listEvents(eventType: Option[String], status: Option[String], eventDate: Option[String], slotNumber: Option[Int])
+
+# Get the tasks for an eventId
+GET     /events/:eventId/tasks      controllers.EventController.getTasksForEventId(eventId: Long)
+
+# Create a task
+POST    /task                      controllers.TaskController.createTask()
+
+# Get details of a task by taskId
+GET     /task/:taskId              controllers.TaskController.getTaskById(taskId: Long)
+
+# Update taskStatus by taskId
+PUT     /task/:taskId              controllers.TaskController.updateTaskStatus(taskId: Long, status: String)
+
+# Assign tasks for an event
+POST    /task/assign               controllers.TaskController.assignTasks()
+
+# Create a team
+POST    /team                      controllers.TeamController.registerTeam()
+
+# Get the team details by teamId
+GET     /team/:teamId              controllers.TeamController.getTeamDetails(teamId: Long)
+
+# List the teams
+GET     /teams                     controllers.TeamController.listTeams(teamType: Option[String])
+
+# Create an issue
+POST    /issue                      controllers.IssueController.create()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
