@@ -1,10 +1,24 @@
-# Scala Sandbox - Base Branch
+# Day14 Tasks
 
-Welcome! This branch serves as a base reference and doesn’t contain assignment files.
+Do Following Spark jobs using Scala
+on Local Mode using only RDDs
 
-- For consolidated assignments covering all days, please navigate to the [`main` branch](https://github.com/sakethmuthoju2k/scala-sandbox/tree/main).
-- To review assignments for a specific day, navigate to the corresponding branch, such as `f-day2-task` for Day 2’s tasks.
+1. Given a collection of strings, write a Spark program to count the total number of words in the collection using RDD transformations and actions.
 
-**Branch Structure:**
-- `main`: Consolidated assignments from all days.
-- `f-dayX-task`: Contains only the assignments from Day X.
+2. Create two RDDs containing numbers and write a Spark program to compute their Cartesian product using RDD transformations.
+
+3. Create an RDD from a list of integers and filter out all even numbers using a Spark program.
+
+4. Write a Spark program to count the frequency of each character in a given collection of strings using RDD transformations.
+
+5. Create an RDD from a list of tuples `(id, score)` and write a Spark program to calculate the average score for all records.
+
+6. Create two RDDs containing key-value pairs `(id, name)` and `(id, score)`. Write a Spark program to join these RDDs on `id` and produce `(id, name, score)`.
+
+7. Write a Spark program to perform a union operation on two RDDs of integers and remove duplicate elements from the resulting RDD.
+
+8. Create an RDD from a list of strings where each string represents a CSV row. Write a Spark program to parse the rows and filter out records where the age is less than 18.
+
+9. Create an RDD of integers from 1 to 100 and write a Spark program to compute their sum using an RDD action.
+
+10. Write a Spark program to group an RDD of key-value pairs `(key, value)` by key and compute the sum of values for each key.
