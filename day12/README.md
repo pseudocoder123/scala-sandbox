@@ -24,8 +24,7 @@ To validate the functionality of the applications running on this VM, the APIs w
   Upon successful request creation, the application triggers a mail notification using akka-kafka-consumer, as shown in the image below.
   ![mail](images/mail.png)
   This confirms that both the Kafka service and application functionality are working as expected on the VM.
-<br/>
-<br/>
+
 - API =  `[GET] /teams` for `event-management`.
     ![teams-api](images/teams_api.png)
   The following API call retrieves a list of teams, confirming that the event-management API is operational. The successful response indicates that the event-management service is functioning as expected.
