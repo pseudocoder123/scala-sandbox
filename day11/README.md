@@ -18,24 +18,21 @@ As part of enhancing the security of the API implemented in Week 3, JWT token-ba
 3. Token Generation:
 - A public login API was implemented to accept credentials (username and password).
 - Credentials are validated against the database records.
-- Upon successful validation, a JWT token is generated and returned to the client.<br/>
-<br/>
-<br/>
-  -- This is the successful credentials validation case.
+- Upon successful validation, a JWT token is generated and returned to the client.
+  
+-- This is the successful credentials validation case.
   ![login_token_generated](images/login_token_generated.png)
 
-  -- This is the invalid credentials case.
+-- This is the invalid credentials case.
   ![login_error](images/login_error.png)
 
 4. Securing APIs:
 - Subsequent API requests require the client to include the generated JWT token in the Authorization header.
 - Tokens are validated before processing the request to ensure the user is authenticated.
-<br/>
-<br/>
-  -- This is the successful token validation case.
+
+-- This is the successful token validation case.
   ![success_api_response](images/success_api_response.png)
 
-  -- This is the invalid token/missing token case.
+-- This is the invalid token/missing token case.
   ![invalid_token](images/invalid_token.png)
-<br/>
   ![missing_token](images/missing_token.png)
