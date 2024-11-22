@@ -1,12 +1,11 @@
 package repositories
 
-import models.ListEventsRequest
 import models.entity.Event
-
+import models.enums.EventStatus.EventStatus
+import ColumnMappings._
 import javax.inject.{Inject, Singleton}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
-
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -25,7 +24,7 @@ class EventRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     def slotNumber = column[Int]("slot_number")
     def guestCount = column[Long]("guest_count")
     def specialRequirements = column[Option[String]]("special_requirements")
-    def eventStatus = column[Option[String]]("event_status")
+    def eventStatus = column[Option[EventStatus]]("event_status")
 
     def * = (id.?, eventType, eventName, eventDate, slotNumber, guestCount, specialRequirements, eventStatus) <> ((Event.apply _).tupled, Event.unapply)
   }
@@ -52,7 +51,7 @@ class EventRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     }
   }
 
-  def listEvents(eventType: Option[String], status: Option[String], eventDate: Option[LocalDate], slotNumber: Option[Int]): Future[Seq[Event]] = {
+  def listEvents(eventType: Option[String], status: Option[EventStatus], eventDate: Option[LocalDate], slotNumber: Option[Int]): Future[Seq[Event]] = {
     val query = events
       .filterOpt(status) { case (event, s) => event.eventStatus === s }
       .filterOpt(eventType) { case (event, s) => event.eventType === s }

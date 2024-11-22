@@ -1,13 +1,11 @@
 package repositories
 
-import models.ListEventsRequest
-import models.entity.{Event, Task}
-
+import models.entity.Task
+import models.enums.TaskStatus.TaskStatus
+import ColumnMappings._
 import javax.inject.{Inject, Singleton}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
-
-import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -18,15 +16,13 @@ class TaskRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implici
   import profile.api._
 
   private class TaskTable(tag: Tag) extends Table[Task](tag, "tasks")  {
-    //    import NotificationsTable.utilDateColumnType
-
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def eventId = column[Long]("event_id")
     def teamId = column[Long]("team_id")
     def taskDescription = column[String]("task_description")
     def deadLine = column[String]("deadline")
     def specialInstructions = column[Option[String]]("special_instructions")
-    def status = column[String]("status")
+    def status = column[TaskStatus]("status")
     def createdAt = column[String]("created_at")
 
     def * = (id.?, eventId, teamId, taskDescription, deadLine, specialInstructions, status, createdAt) <> ((Task.apply _).tupled, Task.unapply)
@@ -40,17 +36,17 @@ class TaskRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implici
     db.run(insertQueryThenReturnId += task)
   }
 
-  def getEventById(taskId: Long): Future[Task] = {
+  def getTaskById(taskId: Long): Future[Task] = {
     db.run(tasks.filter(_.id === taskId).result.head)
   }
 
-  def updateStatus(taskId: Long, status: String): Future[Task] = {
+  def updateStatus(taskId: Long, status: TaskStatus): Future[Task] = {
     val updateQuery = tasks.filter(_.id === taskId)
       .map(ele => ele.status)
       .update(status)
 
     db.run(updateQuery).flatMap { _ =>
-      getEventById(taskId)
+      getTaskById(taskId)
     }
   }
 

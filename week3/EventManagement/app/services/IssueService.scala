@@ -10,10 +10,9 @@ class IssueService @Inject() (
                               issueRepository: IssueRepository,
                               kafkaProducerFactory: KafkaProducerFactory
                             )(implicit executionContext: ExecutionContext) {
-  def create(issue: Issue) = {
+  def create(issue: Issue): Future[Long] = {
     issueRepository.create(issue).map(issue =>{
-      // SEND NOTIFICATON TO MANAGEMENT
-      kafkaProducerFactory.sendIssueReport(issue)
+      kafkaProducerFactory.sendIssueReport(issue)   // send notification to event manager
       issue.id.get
     })
   }

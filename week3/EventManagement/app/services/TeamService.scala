@@ -1,8 +1,8 @@
 package services
 
 import models.entity.Team
+import models.enums.TeamType.TeamType
 import repositories.TeamRepository
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
@@ -14,5 +14,5 @@ class TeamService @Inject() (
 
   def getTeamDetailsById(teamId: Long): Future[Team] = teamRepository.getTeamDetailsById(teamId)
 
-  def listTeams(teamType: Option[String]): Future[Seq[Team]] = teamRepository.listTeams(teamType)
+  def listTeams(teamType: Option[TeamType]): Future[Seq[Team]] = teamRepository.listTeams(teamType)
 }

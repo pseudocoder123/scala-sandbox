@@ -24,21 +24,23 @@ class StartupTasks @Inject()(allocationRepository: AllocationRepository,
         }
       },
       0L,
-      TimeUnit.MINUTES.toSeconds(1), // Repeat every 24 hours
+      TimeUnit.DAYS.toSeconds(1), // Repeat every 24 hours (TimeUnit.DAYS.toSeconds(1))
       TimeUnit.SECONDS
     )
   }
 
   // Method to check overdue equipment allocations and send reminders
   private def checkForOverdueAllocations(): Unit = {
-    val currentDate = LocalDate.now().plusDays(1)
+    val currentDate = LocalDate.now()
 
     // Retrieve overdue allocations as a Future[Seq[EquipmentAllocation]]
     allocationRepository.getOverdueAllocationDetails(currentDate).flatMap { overdueAllocations =>
+      println(s"Length of overdue allocations: ${overdueAllocations.length}")
       Future.sequence(
         overdueAllocations.map { allocation =>
-          employeeRepository.getEmployeeById(allocation.employeeId).map { employee =>
-            kafkaProducerFactory.sendMessageOverdueNotification(allocation, employee)
+          employeeRepository.getEmployeeById(allocation.employeeId).map {
+            case Some(employee) => kafkaProducerFactory.sendMessageOverdueNotification(allocation, employee)
+            case None => ()
           }
         }
       )

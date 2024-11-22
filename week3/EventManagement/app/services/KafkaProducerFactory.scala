@@ -1,7 +1,8 @@
 package services
 
+import config.EnvConfig
 import models.entity.{Event, Issue, Task}
-import models.KafkaMessageFormat
+import models.request.KafkaMessageFormat
 import play.api.libs.json._
 
 import javax.inject._
@@ -19,145 +20,104 @@ object MessageTeam {
 
 @Singleton
 class KafkaProducerFactory @Inject()() {
-  private val props = new Properties()
-
-  props.put("bootstrap.servers", "localhost:9092")
-  props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-  props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+  private val props = new Properties() { props =>
+    props.put("bootstrap.servers", EnvConfig.getKafkaBroker)
+    props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+    props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+  }
 
   private val producer = new KafkaProducer[String, String](props)
+  private val TOPIC = "event-management-topic"
 
-  def sendTasksAssignmentList(lists: List[Task]): Unit = {
-    val producerRecords: List[ProducerRecord[String, String]] = lists.map { task =>
-      var message = s"Task is allocated for eventId: ${task.eventId} with description: ${task.taskDescription}, deadline: ${task.deadLine}"
-      if(task.specialInstructions.isDefined) message += s" and specialInstructions: ${task.specialInstructions.get}"
+  private def determineReceiver(teamId: Long): String = teamId match {
+    case 1 => MessageTeam.CATERING
+    case 2 => MessageTeam.ENTERTAINMENT
+    case 3 => MessageTeam.DECORATIONS
+    case 4 => MessageTeam.LOGISTICS
+  }
 
-      val receiver = task.teamId match {
-        case 1 => MessageTeam.CATERING
-        case 2 => MessageTeam.ENTERTAINMENT
-        case 3 => MessageTeam.DECORATIONS
-        case 4 => MessageTeam.LOGISTICS
-      }
+  private def createKafkaMessage(receiver: String, messageType: String, message: String): ProducerRecord[String, String] = {
+    val kafkaMessage = KafkaMessageFormat(
+      receiver = receiver,
+      messageType = messageType,
+      message = message
+    )
+    new ProducerRecord[String, String](TOPIC, Json.stringify(Json.toJson(kafkaMessage)))
+  }
 
-      val kafkaMessageFormat = KafkaMessageFormat(
-        receiver=receiver,
-        messageType="TASK_ALLOCATION",
-        message= message
+  def sendTasksAssignmentList(tasks: List[Task]): Unit = {
+    tasks.foreach { task =>
+      val message = s"Task is allocated for eventId: #${task.eventId} with description: ${task.taskDescription}, deadline: ${task.deadLine}" +
+        task.specialInstructions.map(instructions => s" and specialInstructions: $instructions").getOrElse("")
+
+      val record = createKafkaMessage(
+        receiver = determineReceiver(task.teamId),
+        messageType = "TASK_ALLOCATION",
+        message = message
       )
 
-      val jsonMessage: String = Json.stringify(Json.toJson(kafkaMessageFormat))
-      new ProducerRecord[String, String]("event-management-topic", jsonMessage)
+      producer.send(record)
     }
-
-    producerRecords.foreach(record => producer.send(record))
   }
 
   def sendIssueReport(issue: Issue): Unit = {
-    val record: ProducerRecord[String, String] = {
-      var message =
-        s"""${issue.issueType} in ${issue.taskId} taskId for event(${issue.eventId}) from team(${issue.teamId}), reportedAt: ${issue.reportedAt} with description: ${issue.issueDescription}""".stripMargin
+    val message = s"${issue.issueType} in #${issue.taskId} taskId for eventId: #${issue.eventId} from teamId #${issue.teamId}, " +
+      s"reportedAt: ${issue.reportedAt} with description: ${issue.issueDescription}"
 
-      val kafkaMessageFormat = KafkaMessageFormat(
-        receiver=MessageTeam.MANAGER,
-        messageType="ISSUE_ALERT",
-        message= message
-      )
-
-      val jsonMessage: String = Json.stringify(Json.toJson(kafkaMessageFormat))
-      new ProducerRecord[String, String]("event-management-topic", jsonMessage)
-    }
+    val record = createKafkaMessage(
+      receiver = MessageTeam.MANAGER,
+      messageType = "ISSUE_ALERT",
+      message = message
+    )
 
     producer.send(record)
   }
 
   def sendEventAlerts(event: Event, tasks: Seq[Task], isEventDay: Boolean): Unit = {
-    val producerRecords: Seq[ProducerRecord[String, String]] = tasks.map { task =>
-      var message = if(isEventDay) s"Event Day Alert - Please complete taskId: ${task.id.get}"
+    // Send team-specific alerts
+    tasks.foreach { task =>
+      val message = if (isEventDay) s"Event Day Alert - Please complete taskId: #${task.id.get}"
       else s"Preparation Remainder - Please complete taskId: ${task.id.get}"
 
-      val receiver = task.teamId match {
-        case 1 => MessageTeam.CATERING
-        case 2 => MessageTeam.ENTERTAINMENT
-        case 3 => MessageTeam.DECORATIONS
-        case 4 => MessageTeam.LOGISTICS
-      }
-
-      val kafkaMessageFormat = KafkaMessageFormat(
-        receiver=receiver,
-        messageType=if(isEventDay) "EVENT_DAY_ALERT" else "PREPARATION_REMAINDER",
-        message= message
+      val record = createKafkaMessage(
+        receiver = determineReceiver(task.teamId),
+        messageType = if (isEventDay) "EVENT_DAY_ALERT" else "PREPARATION_REMAINDER",
+        message = message
       )
 
-      val jsonMessage: String = Json.stringify(Json.toJson(kafkaMessageFormat))
-      new ProducerRecord[String, String]("event-management-topic", jsonMessage)
+      producer.send(record)
     }
 
-    producerRecords.foreach(record => producer.send(record))
+    // Send manager alert
+    val managerMessage = if (isEventDay) s"Event Day Alert for eventId - #${event.id.get}"
+    else s"Preparation Remainder - Please complete eventId: #${event.id.get}"
 
-    // Send Alert For Manager
-    val managerEventAlertMessage = Json.stringify(Json.toJson(KafkaMessageFormat(
-              receiver=MessageTeam.MANAGER,
-              messageType=if(isEventDay) "EVENT_DAY_ALERT" else "PREPARATION_REMAINDER",
-              message=if(isEventDay) s"Event Day Alert for event - ${event.id.get}"
-              else s"Preparation Remainder - Please complete taskId: ${event.id.get}"
-    )))
-    producer.send(new ProducerRecord[String, String]("event-management-topic", managerEventAlertMessage))
-
-  }
-
-//  def sendPeriodicUpdate(event: Event, task: Task, timeDescription: Int): Unit = {
-//    val receiver = task.teamId match {
-//      case 1 => MessageTeam.CATERING
-//      case 2 => MessageTeam.ENTERTAINMENT
-//      case 3 => MessageTeam.DECORATIONS
-//      case 4 => MessageTeam.LOGISTICS
-//    }
-//
-//    val message = s"Complete your task: ${task.id} for event: ${event.id}, remaining: $timeDescription hours"
-//
-//    val kafkaMessageFormat = KafkaMessageFormat(
-//      receiver=receiver,
-//      messageType="PREPARATION_UPDATE",
-//      message= message
-//    )
-//
-//    val jsonMessage: String = Json.stringify(Json.toJson(kafkaMessageFormat))
-//    producer.send(new ProducerRecord[String, String]("event-management-topic", jsonMessage))
-//  }
-
-  def queueNotifications(task: Task, time: Int): Unit = {
-    val receiver = task.teamId match {
-      case 1 => MessageTeam.CATERING
-      case 2 => MessageTeam.ENTERTAINMENT
-      case 3 => MessageTeam.DECORATIONS
-      case 4 => MessageTeam.LOGISTICS
-    }
-
-    val message = s"Complete your task: ${task.id}, remaining: $time hours"
-
-    val kafkaMessageFormat = KafkaMessageFormat(
-      receiver=receiver,
-      messageType="PREPARATION_UPDATE",
-      message= message
+    val managerRecord = createKafkaMessage(
+      receiver = MessageTeam.MANAGER,
+      messageType = if (isEventDay) "EVENT_DAY_ALERT" else "PREPARATION_REMAINDER",
+      message = managerMessage
     )
 
-    val jsonMessage: String = Json.stringify(Json.toJson(kafkaMessageFormat))
-    producer.send(new ProducerRecord[String, String]("event-management-topic", jsonMessage))
+    producer.send(managerRecord)
   }
 
-  def sendDemo(): Unit = {
-    val record: ProducerRecord[String, String] = {
-      val kafkaMessageFormat = KafkaMessageFormat(
-        receiver=MessageTeam.MANAGER,
-        messageType="SEND_DEMO",
-        message= "message"
-      )
-
-      val jsonMessage: String = Json.stringify(Json.toJson(kafkaMessageFormat))
-      new ProducerRecord[String, String]("event-management-topic", jsonMessage)
-    }
+  def sendPeriodicUpdate(event: Event, task: Task, timeDescription: Int): Unit = {
+    val record = createKafkaMessage(
+      receiver = determineReceiver(task.teamId),
+      messageType = "PREPARATION_UPDATE",
+      message = s"Complete your task: ${task.id} for event: #${event.id}, remaining: $timeDescription hours"
+    )
 
     producer.send(record)
   }
 
+  def queueNotifications(task: Task, time: Int): Unit = {
+    val record = createKafkaMessage(
+      receiver = determineReceiver(task.teamId),
+      messageType = "PREPARATION_UPDATE",
+      message = s"Complete your task: #${task.id}, remaining: $time hours"
+    )
+
+    producer.send(record)
+  }
 }

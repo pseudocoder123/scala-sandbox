@@ -1,40 +1,32 @@
 package repositories
 
-import models.AllocationRequest
-import models.entity.Allocation
-
+import models.enums.EquipmentType.EquipmentType
+import models.request.AllocationRequest
 import javax.inject.{Inject, Singleton}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
-
 import java.time.LocalDate
-import java.util.Date
+import java.sql.Date
+import ColumnMappings._
+import models.entity.Allocation
+import models.enums.AllocationStatus
+import models.enums.AllocationStatus.AllocationStatus
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AllocationRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext){
   private val dbConfig = dbConfigProvider.get[JdbcProfile]
-
   import dbConfig._
   import profile.api._
 
-//  // Implicit mapping for java.util.Date <-> java.sql.Date
-//  private object AllocationTable {
-//    implicit val utilDateColumnType: BaseColumnType[Date] = MappedColumnType.base[Date, java.sql.Date](
-//      utilDate => new java.sql.Date(utilDate.getTime),
-//      sqlDate => new Date(sqlDate.getTime)
-//    )
-//  }
-
   private class AllocationTable(tag: Tag) extends Table[Allocation](tag, "allocations")  {
-//    import AllocationTable.utilDateColumnType
-
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def employeeId = column[Long]("employee_id")
     def managerId = column[Option[Long]]("manager_id")
-    def equipmentType = column[String]("equipment_type")
+    def equipmentType = column[EquipmentType]("equipment_type")
     def equipmentId = column[Option[Long]]("equipment_id")
-    def allocationStatus = column[String]("allocation_status")
+    def allocationStatus = column[AllocationStatus]("allocation_status")
     def purpose = column[Option[String]]("purpose")
     def requestDate = column[LocalDate]("request_date")
     def expectedReturnDate = column[Option[LocalDate]]("expected_return_date")
@@ -55,7 +47,7 @@ class AllocationRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(i
       employeeId = allocationRequest.employeeId,
       managerId = managerId,
       equipmentType = allocationRequest.equipmentType,
-      allocationStatus = if(approvalRequired) "APPROVAL_PENDING" else "REQUESTED",
+      allocationStatus = if(approvalRequired) AllocationStatus.APPROVAL_PENDING else AllocationStatus.REQUESTED,
       purpose = allocationRequest.purpose,
       requestDate = LocalDate.now(),
       createdBy = requestedBy
@@ -75,7 +67,7 @@ class AllocationRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(i
     db.run(allocations.filter(allocation => allocation.managerId === empId).result)
   }
 
-  def updateAllocationStatus(allocationId: Long, allocationStatus: String): Future[Int] = {
+  def updateAllocationStatus(allocationId: Long, allocationStatus: AllocationStatus): Future[Int] = {
     val updateQuery = allocations.filter(allocation => allocation.id === allocationId)
       .map(ele => ele.allocationStatus)
       .update(allocationStatus)
@@ -98,10 +90,11 @@ class AllocationRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(i
 
   // Get the overdue allocation details
   def getOverdueAllocationDetails(currentDate: LocalDate): Future[Seq[Allocation]] = {
-    val query = allocations.filter(ele => ele.expectedReturnDate.isDefined &&
-      ele.expectedReturnDate.get < currentDate && ele.returnDate.isEmpty)
-
-    // Adding error handling
+    val query = allocations.filter { allocation =>
+      allocation.expectedReturnDate.isDefined &&
+        allocation.expectedReturnDate < Option(Date.valueOf(currentDate).toLocalDate) &&
+        allocation.returnDate.isEmpty
+    }
     db.run(query.result)
   }
 

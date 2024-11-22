@@ -1,11 +1,144 @@
 <configuration>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- corporateEquipmentAllocation -->
+    <appender name="ManagerApprovalMessageFile" class="ch.qos.logback.core.FileAppender">
+        <file>logs/ca_manager_approval_messages.log</file>
+        <append>true</append>
+        <immediateFlush>true</immediateFlush>
         <encoder>
-            <pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <root level="INFO">
-        <appender-ref ref="STDOUT" />
+    <appender name="InventoryMessageFile" class="ch.qos.logback.core.FileAppender">
+        <file>logs/ca_inventory_messages.log</file>
+        <append>true</append>
+        <immediateFlush>true</immediateFlush>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="MaintenanceMessageFile" class="ch.qos.logback.core.FileAppender">
+        <file>logs/ca_maintenance_messages.log</file>
+        <append>true</append>
+        <immediateFlush>true</immediateFlush>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="EmployeeMessageFile" class="ch.qos.logback.core.FileAppender">
+        <file>logs/ca_employee_messages.log</file>
+        <append>true</append>
+        <immediateFlush>true</immediateFlush>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- eventManagement -->
+    <appender name="CateringMessageFile" class="ch.qos.logback.core.FileAppender">
+        <file>logs/em_catering_messages.log</file>
+        <append>true</append>
+        <immediateFlush>true</immediateFlush>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="LogisticsMessageFile" class="ch.qos.logback.core.FileAppender">
+        <file>logs/em_logistics_messages.log</file>
+        <append>true</append>
+        <immediateFlush>true</immediateFlush>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="DecorationMessageFile" class="ch.qos.logback.core.FileAppender">
+        <file>logs/em_decoration_messages.log</file>
+        <append>true</append>
+        <immediateFlush>true</immediateFlush>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="EntertainmentMessageFile" class="ch.qos.logback.core.FileAppender">
+        <file>logs/em_entertainment_messages.log</file>
+        <append>true</append>
+        <immediateFlush>true</immediateFlush>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ManagerMessageFile" class="ch.qos.logback.core.FileAppender">
+        <file>logs/em_manager_messages.log</file>
+        <append>true</append>
+        <immediateFlush>true</immediateFlush>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Logger for corporateEquipmentAllocation -->
+    <!-- Logger for Maintenance messages -->
+    <logger name="ManagerApprovalMessageLogger" level="info" additivity="false">
+        <appender-ref ref="ManagerApprovalMessageFile" />
+    </logger>
+
+    <!-- Logger for Inventory messages -->
+    <logger name="InventoryMessageLogger" level="info" additivity="false">
+        <appender-ref ref="InventoryMessageFile" />
+    </logger>
+
+    <!-- Logger for Maintenance messages -->
+    <logger name="MaintenanceMessageLogger" level="info" additivity="false">
+        <appender-ref ref="MaintenanceMessageFile" />
+    </logger>
+
+    <!-- Logger for Employee messages (OVERDUE)-->
+    <logger name="EmployeeMessageLogger" level="info" additivity="false">
+        <appender-ref ref="EmployeeMessageFile" />
+    </logger>
+
+    <!-- Logger for eventManagement -->
+    <!-- Logger for Catering messages -->
+    <logger name="CateringMessageLogger" level="info" additivity="false">
+        <appender-ref ref="CateringMessageFile" />
+    </logger>
+
+    <!-- Logger for Logistics messages -->
+    <logger name="LogisticsMessageLogger" level="info" additivity="false">
+        <appender-ref ref="LogisticsMessageFile" />
+    </logger>
+
+    <!-- Logger for Decoration messages -->
+    <logger name="DecorationMessageLogger" level="info" additivity="false">
+        <appender-ref ref="DecorationMessageFile" />
+    </logger>
+
+    <!-- Logger for Entertainment messages-->
+    <logger name="EntertainmentMessageLogger" level="info" additivity="false">
+        <appender-ref ref="EntertainmentMessageFile" />
+    </logger>
+
+    <!-- Logger for Manager messages (ISSUES)-->
+    <logger name="ManagerMessageLogger" level="info" additivity="false">
+        <appender-ref ref="ManagerMessageFile" />
+    </logger>
+
+    <!-- Root Logger -->
+    <root level="error">
+        <appender-ref ref="ManagerApprovalMessageFile" />
+        <appender-ref ref="InventoryMessageFile" />
+        <appender-ref ref="MaintenanceMessageFile" />
+        <appender-ref ref="EmployeeMessageFile" />
+        <appender-ref ref="CateringMessageFile" />
+        <appender-ref ref="LogisticsMessageFile" />
+        <appender-ref ref="DecorationMessageFile" />
+        <appender-ref ref="EntertainmentMessageFile" />
+        <appender-ref ref="ManagerMessageFile" />
     </root>
 </configuration>

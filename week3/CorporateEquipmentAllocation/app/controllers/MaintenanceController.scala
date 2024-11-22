@@ -1,30 +1,31 @@
 package controllers
 
-import models.{AllocationRequest, MaintenanceUpdateRequest}
-import models.entity.Equipment
+import models.request.MaintenanceUpdateRequest
+import models.response.ApiResponse
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import play.api.mvc.{AbstractController, Action, ControllerComponents}
-import services.{EquipmentService, MaintenanceService}
-
+import services.MaintenanceService
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.mvc._
 
 class MaintenanceController @Inject()(
                                      val cc: ControllerComponents,
                                      maintenanceService: MaintenanceService
                                    )(implicit ec: ExecutionContext) extends AbstractController(cc) {
 
-  // update an equipment
+  /**
+   * Updates the maintenance status of equipment.
+   */
   def updateMaintenanceStatusAction(): Action[JsValue] = Action.async(parse.json) { request =>
     request.body.validate[MaintenanceUpdateRequest] match {
       case JsSuccess(req, _) =>
         maintenanceService.updateMaintenanceStatus(req).map(created =>
-          Created(Json.toJson(created)))
+          ApiResponse.successResult(201, Json.obj("message"->"Maintenance status updated")))
       case JsError(errors) =>
-        Future.successful(BadRequest(Json.obj(
-          "message" -> "Invalid person data",
-          "errors" -> JsError.toJson(errors))))
+        Future.successful(ApiResponse.errorResult(
+          "Invalid maintenance request data",
+          400
+        ))
     }
   }
 }

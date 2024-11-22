@@ -1,9 +1,9 @@
 package models.entity
 
+import models.enums.EventStatus.EventStatus
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDate
 
 case class Event(
                   id: Option[Long] = None,
@@ -13,7 +13,7 @@ case class Event(
                   slotNumber: Int,
                   guestCount: Long,
                   specialRequirements: Option[String] = None,
-                  eventStatus: Option[String] = None
+                  eventStatus: Option[EventStatus] = None
                 )
 
 object Event {
@@ -24,8 +24,8 @@ object Event {
   private val slotNumberReads: Reads[Int] = (JsPath \ "slotNumber").read[Int]
   private val guestCountReads: Reads[Long] = (JsPath \ "guestCount").read[Long]
   private val specialRequirementsReads: Reads[Option[String]] = (JsPath \ "specialRequirements").readNullable[String]
-  private val eventStatusReads: Reads[Option[String]] =
-    (JsPath \ "eventStatus").readNullable[String]
+  private val eventStatusReads: Reads[Option[EventStatus]] =
+    (JsPath \ "eventStatus").readNullable[EventStatus]
 
   // Combine all the reads
   implicit val eventReads: Reads[Event] = (

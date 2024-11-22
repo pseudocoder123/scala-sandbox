@@ -1,11 +1,8 @@
 package services
 
-import models.entity.{Event, Task}
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import repositories.{EventRepository, TaskRepository}
-import java.time.format.DateTimeFormatter
 import java.time.{Duration, LocalDate, LocalDateTime, LocalTime}
 import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
 
@@ -31,6 +28,43 @@ class StartupTasks @Inject()(eventRepository: EventRepository,
       TimeUnit.DAYS.toSeconds(1), // Repeat every 24 hours
       TimeUnit.SECONDS
     )
+  }
+
+  // Method to check for Event Day Alert
+  private def checkEventDayAlert(): Unit = {
+    val currentDate = LocalDate.now()
+
+    eventRepository.getEventsByDate(currentDate: LocalDate).flatMap { events =>
+      Future.sequence(
+        events.map { event =>
+          taskRepository.getTasksForEventId(event.id.get).map { tasks =>
+            kafkaProducerFactory.sendEventAlerts(event, tasks, isEventDay = true)
+          }
+        }
+      )
+    }.recover {
+      case ex: Exception =>
+        println(s"Failed to check overdue allocations: ${ex.getMessage}")
+    }
+  }
+
+  // Preparation Remainder one day before
+  private def checkPreparationRemainder(): Unit = {
+    val eventDate = LocalDate.now().plusDays(1)
+
+    // Retrieve overdue allocations as a Future[Seq[EquipmentAllocation]]
+    eventRepository.getEventsByDate(eventDate: LocalDate).flatMap { events =>
+      Future.sequence(
+        events.map { event =>
+          taskRepository.getTasksForEventId(event.id.get).map { tasks =>
+            kafkaProducerFactory.sendEventAlerts(event, tasks, isEventDay = false)
+          }
+        }
+      )
+    }.recover {
+      case ex: Exception =>
+        println(s"Failed to check overdue allocations: ${ex.getMessage}")
+    }
   }
 
 //  private def startPreciseNotificationScheduler(): Unit = {
@@ -115,42 +149,5 @@ class StartupTasks @Inject()(eventRepository: EventRepository,
 //      TimeUnit.SECONDS
 //    )
 //  }
-
-  // Method to check for Event Day Alert
-  private def checkEventDayAlert(): Unit = {
-    val currentDate = LocalDate.now()
-
-    eventRepository.getEventsByDate(currentDate: LocalDate).flatMap { events =>
-      Future.sequence(
-        events.map { event =>
-          taskRepository.getTasksForEventId(event.id.get).map { tasks =>
-            kafkaProducerFactory.sendEventAlerts(event, tasks, isEventDay = true)
-          }
-        }
-      )
-    }.recover {
-      case ex: Exception =>
-        println(s"Failed to check overdue allocations: ${ex.getMessage}")
-    }
-  }
-
-  // Preparation Remainder one day before
-  private def checkPreparationRemainder(): Unit = {
-    val eventDate = LocalDate.now().plusDays(1)
-
-    // Retrieve overdue allocations as a Future[Seq[EquipmentAllocation]]
-    eventRepository.getEventsByDate(eventDate: LocalDate).flatMap { events =>
-      Future.sequence(
-        events.map { event =>
-          taskRepository.getTasksForEventId(event.id.get).map { tasks =>
-            kafkaProducerFactory.sendEventAlerts(event, tasks, isEventDay = false)
-          }
-        }
-      )
-    }.recover {
-      case ex: Exception =>
-        println(s"Failed to check overdue allocations: ${ex.getMessage}")
-    }
-  }
 
 }

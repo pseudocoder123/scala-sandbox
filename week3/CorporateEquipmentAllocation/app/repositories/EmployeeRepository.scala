@@ -33,8 +33,8 @@ class EmployeeRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(imp
     db.run(insertQueryThenReturnId += employee)
   }
 
-  def getEmployeeById(id: Long): Future[Employee] = {
-    db.run(employees.filter(employee => employee.id === id && employee.isActive === true).result.head)
+  def getEmployeeById(id: Long): Future[Option[Employee]] = {
+    db.run(employees.filter(employee => employee.id === id && employee.isActive === true).result.headOption)
   }
 
 }

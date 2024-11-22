@@ -7,6 +7,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalaVersion := "2.13.14"
 
 libraryDependencies += guice
+libraryDependencies += ws
+
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.0" % Test
 
 libraryDependencies ++= Seq(
@@ -17,6 +19,9 @@ libraryDependencies ++= Seq(
 
 libraryDependencies += "com.typesafe.play" %% "play-json" % "2.9.2"
 libraryDependencies += "org.apache.kafka" % "kafka-clients" % "3.4.0" // Add the correct version of Kafka client
+
+libraryDependencies += "com.auth0" % "java-jwt" % "4.3.0" // Java JWT library
+libraryDependencies += filters
 
 
 // Adds additional packages into Twirl

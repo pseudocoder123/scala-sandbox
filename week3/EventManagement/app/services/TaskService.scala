@@ -1,9 +1,11 @@
 package services
 
-import models.AssignTasksRequest
 import models.entity.Task
+import models.enums.TaskStatus
+import models.enums.TaskStatus.TaskStatus
+import models.request.AssignTasksRequest
 import repositories.TaskRepository
-
+import java.time.format.DateTimeFormatter
 import java.time.{Duration, LocalDateTime}
 import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
 import javax.inject.{Inject, Singleton}
@@ -16,9 +18,9 @@ class TaskService @Inject() (
                              )(implicit executionContext: ExecutionContext) {
   def create(task: Task): Future[Long] = taskRepository.create(task)
 
-  def getEventById(taskId: Long): Future[Task] = taskRepository.getEventById(taskId)
+  def getTaskById(taskId: Long): Future[Task] = taskRepository.getTaskById(taskId)
 
-  def updateStatus(taskId: Long, status: String): Future[Task] = {
+  def updateStatus(taskId: Long, status: TaskStatus): Future[Task] = {
     taskRepository.updateStatus(taskId, status)
   }
 
@@ -32,7 +34,7 @@ class TaskService @Inject() (
         taskDescription = ele.taskDescription,
         deadLine = ele.deadLine,
         specialInstructions = ele.specialInstructions,
-        status = "ASSIGNED",
+        status = TaskStatus.ASSIGNED,
         createdAt = LocalDateTime.now().toString
       )
       acc :+ task
@@ -48,13 +50,13 @@ class TaskService @Inject() (
     val scheduler: ScheduledExecutorService = Executors.newScheduledThreadPool(1)
 
     tasks.foreach { task =>
-      val deadline = LocalDateTime.parse(task.deadLine) // Assuming deadLine is in correct format
+      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+      val deadline = LocalDateTime.parse(task.deadLine, formatter)
       val now = LocalDateTime.now()
 
-      // Calculate the notification times: 3 hours, 1 day, and 6 hours prior to deadline
+      // Calculate the notification times: 3 hours and 6 hours prior to deadline
       val timesToNotify = List(
         (deadline.minusHours(3), 3),
-        (deadline.minusDays(1), 1),
         (deadline.minusHours(6), 6)
       )
 

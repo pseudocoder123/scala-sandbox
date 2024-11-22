@@ -1,6 +1,7 @@
 package controllers
 
-import models.entity.{Issue, Team}
+import models.entity.Issue
+import models.response.ApiResponse
 import play.api.mvc._
 import play.api.libs.json._
 import services.IssueService
@@ -13,16 +14,23 @@ class IssueController @Inject()(
                                 issueService: IssueService
                               )(implicit ec: ExecutionContext) extends AbstractController(cc) {
 
-  // Register a team
+  /**
+   * Creates a new issue in the system.
+   * Validates and processes the issue information provided in the JSON payload.
+   *
+   * @return An Action wrapper containing the HTTP response:
+   *         - 201 (Created) with success message and created issue ID
+   */
   def create(): Action[JsValue] = Action.async(parse.json) { request =>
     request.body.validate[Issue] match {
       case JsSuccess(issue, _) =>
         issueService.create(issue).map(id =>
-          Created(Json.obj("id" -> id, "message" -> "CREATED")))
+        ApiResponse.successResult(201, Json.obj("message"->"Issue created", "id"-> id)))
       case JsError(errors) =>
-        Future.successful(BadRequest(Json.obj(
-          "message" -> "Invalid Issue data",
-          "errors" -> JsError.toJson(errors))))
+        Future.successful(ApiResponse.errorResult(
+          "Invalid issue request data",
+          400
+        ))
     }
   }
 }

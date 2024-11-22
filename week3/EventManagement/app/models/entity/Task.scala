@@ -1,5 +1,6 @@
 package models.entity
 
+import models.enums.TaskStatus.TaskStatus
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
@@ -10,7 +11,7 @@ case class Task(
                   taskDescription: String,
                   deadLine: String,
                   specialInstructions: Option[String],
-                  status: String,
+                  status: TaskStatus,
                   createdAt: String
                 )
 
@@ -21,7 +22,7 @@ object Task {
   private val taskDescriptionReads: Reads[String] = (JsPath \ "taskDescription").read[String]
   private val deadLineReads: Reads[String] = (JsPath \ "deadLine").read[String]
   private val specialInstructionsReads: Reads[Option[String]] = (JsPath \ "specialInstructions").readNullable[String]
-  private val statusReads: Reads[String] = (JsPath \ "status").read[String]
+  private val statusReads: Reads[TaskStatus] = (JsPath \ "status").read[TaskStatus]
   private val createdAtReads: Reads[String] = (JsPath \ "createdAt").read[String]
 
   // Combine all the reads

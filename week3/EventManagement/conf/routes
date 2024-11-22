@@ -3,6 +3,13 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
+OPTIONS   /*path   controllers.Application.preflight(path: String)
+
+POST    /api/login                controllers.AuthController.login
+
+# Create an user
+POST    /user                     controllers.UserController.createUser()
+
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index()
 
