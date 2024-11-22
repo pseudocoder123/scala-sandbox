@@ -22,7 +22,7 @@ As part of enhancing the security of the API implemented in Week 3, JWT token-ba
 <br/>
 <br/>
   -- This is the successful credentials validation case.
-  ![login_token](images/login_token.png)
+  ![login_token_generated](images/login_token_generated.png)
 
   -- This is the invalid credentials case.
   ![login_error](images/login_error.png)
@@ -33,7 +33,7 @@ As part of enhancing the security of the API implemented in Week 3, JWT token-ba
 <br/>
 <br/>
   -- This is the successful token validation case.
-  ![api_response](images/api_response.png)
+  ![success_api_response](images/success_api_response.png)
 
   -- This is the invalid token/missing token case.
   ![invalid_token](images/invalid_token.png)
