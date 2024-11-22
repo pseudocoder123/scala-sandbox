@@ -3,7 +3,7 @@ import org.apache.spark.sql.SparkSession
 object Question9 {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder()
-      .appName("Double Numbers")
+      .appName("Question9")
       .master("local[*]")
       .getOrCreate()
     val sc = spark.sparkContext
@@ -13,5 +13,6 @@ object Question9 {
 
     println(rdd.reduce(_+_))
 //    println(rdd.sum())
+    spark.stop()
   }
 }

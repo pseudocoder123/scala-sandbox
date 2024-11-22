@@ -4,7 +4,7 @@ import org.apache.spark.sql.SparkSession
 object Question1 {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder()
-      .appName("Double Numbers")
+      .appName("Question1")
       .master("local[*]")
       .getOrCreate()
     val sc = spark.sparkContext
@@ -22,5 +22,7 @@ object Question1 {
     val totalWords = rdd.flatMap(_.split(" ")).count()
 
     println(totalWords)
+
+    spark.stop()
   }
 }

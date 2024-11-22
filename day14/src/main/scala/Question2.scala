@@ -4,7 +4,7 @@ import org.apache.spark.sql.SparkSession
 object Question2 {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder()
-      .appName("Double Numbers")
+      .appName("Question2")
       .master("local[*]")
       .getOrCreate()
     val sc = spark.sparkContext
@@ -16,5 +16,7 @@ object Question2 {
 
     val (rdd1, rdd2) = (parallelize(list1), parallelize(list2))
     println(rdd1.cartesian(rdd2).collect().mkString("Array(", ", ", ")"))
+
+    spark.stop()
   }
 }

@@ -4,7 +4,7 @@ import org.apache.spark.sql.SparkSession
 object Question8 {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder()
-      .appName("Double Numbers")
+      .appName("Question8")
       .master("local[*]")
       .getOrCreate()
     val sc = spark.sparkContext
@@ -29,5 +29,6 @@ object Question8 {
       .map(ele => s"Name: ${ele.name} with Age: ${ele.age}")
       .collect()
     println(result.mkString("Array(", ", ", ")"))
+    spark.stop()
   }
 }

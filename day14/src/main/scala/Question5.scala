@@ -3,7 +3,7 @@ import org.apache.spark.sql.SparkSession
 object Question5 {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder()
-      .appName("Double Numbers")
+      .appName("Question5")
       .master("local[*]")
       .getOrCreate()
     val sc = spark.sparkContext
@@ -19,5 +19,6 @@ object Question5 {
     }
 
     println(result)
+    spark.stop()
   }
 }
