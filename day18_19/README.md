@@ -23,6 +23,7 @@ The kafka producer sends the messages as shown above.
 ![](images/ex-3-2.png)
 ![](images/ex-3-3.png)
 The Spark Structured Streaming application reads these messages, extracts the required fields, and calculates the total amount in 10-second windows. The processed results are displayed in batches
+
 ----------
 
 ### Exercise-4
