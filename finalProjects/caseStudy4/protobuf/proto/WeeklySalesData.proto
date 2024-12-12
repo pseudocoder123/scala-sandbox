@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package caseStudy4.protobuf;
+
+// Represents a sales record
+message WeeklySalesData {
+  int32 store = 1;
+  int32 department = 2;
+  string date = 3;
+  float weekly_sales = 4;
+  string is_holiday = 5;
+}

@@ -1,0 +1,12 @@
+
+‘
+WeeklySalesData.protocaseStudy4.protobuf"ù
+WeeklySalesData
+store (Rstore
+
+department (R
+department
+date (	Rdate!
+weekly_sales (RweeklySales
+
+is_holiday (	R	isHolidaybproto3
