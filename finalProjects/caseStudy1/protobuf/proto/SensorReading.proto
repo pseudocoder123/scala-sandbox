@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package caseStudy1.protobuf;
+
+// Represents a sales record
+message SensorReading {
+  int32 sensorId = 1;
+  int64 timestamp = 2;
+  float temperature = 3;
+  float humidity = 4;
+}

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package caseStudy1.protobuf;
+
+// Represents a sales record
+message AggregatedSensorReading {
+  int32 sensorId = 1;
+  float averageTemperature = 2;
+  float averageHumidity = 3;
+  float minimumTemperature = 4;
+  float maximumTemperature = 5;
+  float minimumHumidity = 6;
+  float maximumHumidity = 7;
+  int64 noOfRecords = 8;
+}
