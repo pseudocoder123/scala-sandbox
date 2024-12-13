@@ -1,7 +1,9 @@
 ## Real-Time Simulation
 
-### Compilation and Descriptor Generation Commands:
+### Architectural Diagram
+![](images/architecture.png)
 
+### Compilation and Descriptor Generation Commands:
 To generate the compiled files and descriptor files from the .proto file, the following commands are used:
 - Generate Compiled Files:
     - SensorReading: ```protoc --descriptor_set_out=src/main/scala/caseStudy1/protobuf/descriptor/SensorReading.desc --include_imports --proto_path=src/main/scala/caseStudy1/protobuf/proto src/main/scala/caseStudy1/protobuf/proto/SensorReading.proto```
@@ -18,6 +20,8 @@ To generate the compiled files and descriptor files from the .proto file, the fo
 - Once serialized into binary format, the data produced to Kafka appears as:
 
 ![](images/sensorKafkaConsole.png)
+
+The Akka producer has successfully produced 1707 messages, all of which have been received by Kafka, ensuring no data loss. 
 
 ### Data Processing with Spark Streaming and GCP:
 - The serialized data from Kafka is consumed by a Spark Streaming job.
