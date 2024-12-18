@@ -68,7 +68,7 @@ object StreamProcessor {
     // broadcastBatchDF.show()
 
     val currentProcessingTime = LocalDateTime.now()
-//    storeSensorData(broadcastBatchDF, currentProcessingTime)
+    storeSensorData(broadcastBatchDF, currentProcessingTime)
     processBatchDataForIncrementalAggregation(spark, broadcastBatchDF, currentProcessingTime)
   }
 }
