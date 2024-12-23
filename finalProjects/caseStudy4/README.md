@@ -1,3 +1,6 @@
+### Architectural Diagram
+![](images/cs4_architecture.png)
+
 ## Datasets
 The following datasets are located in the `resources` folder:
 - `features.csv`
